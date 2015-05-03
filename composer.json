@@ -1,0 +1,26 @@
+{
+  "name": "ywisax/com.tourze.rest",
+  "description": "description_text",
+  "minimum-stability": "dev",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "YwiSax",
+      "email": "25803471@qq.com"
+    }
+  ],
+  "require": {
+    "ywisax/sdkframework": "*"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/ywisax/sdkframework"
+    },
+    {
+      "type": "composer",
+      "url": "http://php.composer.org/repo/packagist/"
+    },
+    {"packagist": false}
+  ]
+}

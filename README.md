@@ -1,1 +1,3 @@
-#com.tourze.rest
+# REST服务中心
+
+为前端应用提供内容管理的接口

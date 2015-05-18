@@ -1,7 +1,7 @@
 {
   "name": "ywisax/com.tourze.rest",
-  "description": "description_text",
-  "minimum-stability": "dev",
+  "description": "REST服务中心",
+  "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
     {
@@ -10,13 +10,11 @@
     }
   ],
   "require": {
-    "ywisax/sdkframework": "*"
+    "slim/slim": "^2.6",
+    "predis/predis": "^1.0",
+    "fzaninotto/faker": "^1.4"
   },
   "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/ywisax/sdkframework"
-    },
     {
       "type": "composer",
       "url": "http://php.composer.org/repo/packagist/"

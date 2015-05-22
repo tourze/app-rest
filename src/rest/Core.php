@@ -2,6 +2,10 @@
 
 namespace rest;
 
+use Faker\Factory;
+use rest\exception\RestException;
+use rest\storage\Base;
+use rest\storage\StorageInterface;
 use Slim\Slim;
 
 /**
@@ -30,9 +34,34 @@ class Core extends Slim
     public $resourceID = 0;
 
     /**
+     * @var mixed 当前的meta数据
+     */
+    public $meta;
+
+    /**
+     * @var StorageInterface|Base
+     */
+    public $storage;
+
+    /**
+     * @var array 请求参数
+     */
+    public $query = [];
+
+    /**
+     * @var array 一些行为参数
+     */
+    public $behavior = [
+        '_limit'  => 30,
+        '_offset' => 0,
+    ];
+
+    /**
      * 加载和解析资源路径
      *
      * @param $resource
+     * @throws \rest\exception\MetaException
+     * @throws \rest\exception\RestException
      */
     public function loadResource($resource = null)
     {
@@ -51,10 +80,45 @@ class Core extends Slim
         }
 
         // 解析得出资源名称
-        $this->resourceName = implode('_', $resource);
+        $this->resourceName = implode('/', $resource);
 
         // 获取得到meta的配置信息
+        $this->meta = Meta::get($this->resourceName);
 
+        // 根据meta信息加载storage
+        if ( ! isset($this->meta['storage']))
+        {
+            throw new RestException('Unable to locate the storage.');
+        }
+        $this->storage = Storage::instance($this->meta['storage']);
+        unset($this->meta['storage']);
+
+        $this->storage->meta =& $this->meta;
+    }
+
+    /**
+     * 加载query参数
+     */
+    public function loadQuery()
+    {
+        foreach ($this->request->get() as $k => $v)
+        {
+            if ($k{0} != '_')
+            {
+                $this->query[$k] = $v;
+            }
+        }
+    }
+
+    public function loadBehavior()
+    {
+        foreach ($this->request->get() as $k => $v)
+        {
+            if ($k{0} == '_')
+            {
+                $this->behavior[$k] = $v;
+            }
+        }
     }
 
     /**
@@ -112,35 +176,32 @@ class Core extends Slim
      */
     public function resetGet()
     {
+        // 有ID的情况下，获取单条记录
         if ($this->resourceID)
         {
-            $faker = \Faker\Factory::create();
-            $result = [
-                'id' => $faker->randomDigitNotNull,
-                'name' => $faker->name,
-                'address' => $faker->address,
-            ];
+            $result = $this->restGetOne();
         }
         else
         {
-            $records = [];
-            $i = 1;
-            $max = rand(10, 15);
-            while ($i <= $max)
-            {
-                $faker = \Faker\Factory::create();
-                $records[] = [
-                    'id' => $faker->randomDigitNotNull,
-                    'name' => $faker->name,
-                    'address' => $faker->address,
-                ];
-                $i++;
-            }
-
-            $result = $records;
+            $result = $this->restGetMulti();
         }
 
         $this->restResponse($result);
+    }
+
+    /**
+     * 获取单条记录
+     *
+     * @return mixed
+     */
+    public function restGetOne()
+    {
+        return $this->storage->record(['id' => $this->resourceID], 1);
+    }
+
+    public function restGetMulti()
+    {
+        return $this->storage->record($this->query, 10);
     }
 
     /**
@@ -162,7 +223,6 @@ class Core extends Slim
      */
     public function restPut()
     {
-
     }
 
     /**
@@ -199,13 +259,13 @@ class Core extends Slim
     public function restOptions()
     {
         $result = [
-            'name' => 'Resource Name',
+            'name'        => 'Resource Name',
             'description' => 'This is a resource',
-            'methods' => [
+            'methods'     => [
                 'GET',
                 'POST'
             ],
-            'columns' => [
+            'columns'     => [
                 'id',
                 'name',
                 'description',

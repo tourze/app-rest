@@ -14,6 +14,7 @@ $app->map('/:resource', function ($resource) use ($app)
 {
     // 加载资源
     $app->loadResource($resource);
+    $app->loadQuery();
     $app->dispatchMethod();
 })->conditions(['resource' => '(.*)'])->via('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD');
 

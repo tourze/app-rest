@@ -13,8 +13,8 @@
     "slim/slim": "^2.6",
     "predis/predis": "^1.0",
     "fzaninotto/faker": "^1.4",
-    "doctrine/orm": "^2.5",
-    "symfony/yaml": "^2.6"
+    "symfony/yaml": "^2.6",
+    "doctrine/dbal": "^2.5"
   },
   "repositories": [
     {

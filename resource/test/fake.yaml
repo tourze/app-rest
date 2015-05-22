@@ -1,0 +1,10 @@
+storage:
+  type: fake
+fields:
+  id:
+    type: integer
+    generator: AUTO_INCREMENT
+  name:
+    type: string
+  address:
+    type: string

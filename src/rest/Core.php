@@ -162,6 +162,7 @@ class Core extends Slim
             $method = strtolower($this->request->getMethod());
         }
 
+        //$this->response->headers['X-Powered-By'] = 'Rest Server';
         $methodConfig = $this->meta['method'];
 
         if (isset($methodConfig[$method]) && $methodConfig[$method])
@@ -233,6 +234,7 @@ class Core extends Slim
             'code'    => $code,
             'message' => $message
         ];
+        $this->response->headers['Rest-Message'] = $message;
         $this->restResponse($body, $code);
     }
 
@@ -343,7 +345,22 @@ class Core extends Slim
      */
     public function restDelete()
     {
-        $this->restResponse('', 204);
+        // 获取要删除的资源
+        $data = $this->restGetOne();
+        if ( ! $data)
+        {
+            $this->restError('The requested record not found.', 404);
+            return;
+        }
+
+        if ($this->storage->delete($data['id']))
+        {
+            $this->restError('The record was removed.', 204);
+        }
+        else
+        {
+            $this->restError('Error occurred while deleting object.', 204);
+        }
     }
 
     /**

@@ -139,6 +139,12 @@ class PDO extends Base implements StorageInterface
      */
     public function delete($primaryID)
     {
-        // TODO: Implement delete() method.
+        $query = $this->conn->createQueryBuilder();
+
+        $query->delete($this->table);
+        $query->where('id = :id');
+        $query->setParameter('id', $primaryID);
+
+        return (bool) $query->execute();
     }
 }

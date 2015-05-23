@@ -319,6 +319,7 @@ class Core extends Slim
 
     /**
      * PUT（UPDATE）：用于完整的替换资源或者创建指定身份的资源，比如创建 id 为 123 的某个资源，客户端需要传完整的属性。
+     * 要谨慎使用PUT方法
      *
      * - 如果是创建了资源，则返回 201 Created
      * - 如果是替换了资源，则返回 200 OK
@@ -326,6 +327,21 @@ class Core extends Slim
      */
     public function restPut()
     {
+        $result = $this->storage->create($this->data, $this->resourceID);
+
+        if ($result)
+        {
+            $result = array_shift($result);
+            // 创建成功
+            // 返回资源信息
+            $this->response->headers['Location'] = $this->urlFor('resource-handle', ['resource' => $this->resourcePath . '/' . $result['id']]);
+            $this->restResponse($result, 201);
+        }
+        else
+        {
+            // 创建失败
+            $this->restError('Error occurred while creating object.');
+        }
     }
 
     /**

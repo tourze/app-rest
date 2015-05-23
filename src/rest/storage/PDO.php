@@ -46,6 +46,11 @@ class PDO extends Base implements StorageInterface
      */
     public function create($data, $primaryID = null)
     {
+        if ($primaryID !== null)
+        {
+            $data['id'] = $primaryID;
+        }
+
         $query = $this->conn->createQueryBuilder();
         $query->insert($this->table);
 

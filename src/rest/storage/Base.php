@@ -69,17 +69,33 @@ abstract class Base
      * @param $params
      * @param $data
      * @param $expire integer 过期时间
+     * @return mixed
      */
-    public function setCache($params, $data, $expire)
+    public function setCache($params, $data, $expire = 600)
     {
+        $key = $this->generateCacheKey([
+            'resourceID'   => $this->app->resourceID,
+            'resourceName' => $this->app->resourceName,
+            'resourcePath' => $this->app->resourcePath,
+            'params'       => $params,
+        ]);
+        return $this->ensureCache()->set($key, $data, $expire);
     }
 
     /**
      * 强制删除缓存
      *
      * @param $params
+     * @return int
      */
     public function deleteCache($params)
     {
+        $key = $this->generateCacheKey([
+            'resourceID'   => $this->app->resourceID,
+            'resourceName' => $this->app->resourceName,
+            'resourcePath' => $this->app->resourcePath,
+            'params'       => $params,
+        ]);
+        return $this->ensureCache()->del($key);
     }
 }

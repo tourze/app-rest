@@ -18,6 +18,9 @@ $app->map('/:resource', function ($resource) use ($app)
     $app->loadData();
     $app->loadBehavior();
     $app->dispatchMethod();
-})->conditions(['resource' => '(.*)'])->via('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD');
+})
+    ->name('resource-handle')
+    ->conditions(['resource' => '(.*)'])
+    ->via('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD');
 
 $app->run();

@@ -8,7 +8,9 @@ storage:
   table: geo_country
 method:
   head: true
+  options: true
   get: true
+  post: true
 fields:
   id:
     type: integer

@@ -9,7 +9,7 @@ class Csv extends Base implements StorageInterface
      *
      * @param      $data
      * @param null $primaryID
-     * @return  bool
+     * @return  mixed
      */
     public function create($data, $primaryID = null)
     {

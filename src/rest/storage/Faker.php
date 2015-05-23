@@ -16,11 +16,14 @@ class Faker extends Base implements StorageInterface
      *
      * @param      $data
      * @param null $primaryID
-     * @return  bool
+     * @return  mixed
      */
     public function create($data, $primaryID = null)
     {
-        // TODO: Implement create() method.
+        $faker = Factory::create();
+
+        $data['id'] = $faker->randomDigitNotNull;
+        return [$data];
     }
 
     /**

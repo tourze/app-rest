@@ -92,11 +92,7 @@ class Core extends Slim
         $this->meta = Meta::get($this->resourceName);
         if ( ! $this->meta)
         {
-            $body = [
-                'code'    => 404,
-                'message' => 'The requested resource not found.'
-            ];
-            $this->restResponse($body, 404);
+            $this->restError('The requested resource not found.', 404);
             return;
         }
 
@@ -194,16 +190,12 @@ class Core extends Slim
                     $this->restOptions();
                     break;
                 default:
-                    $this->restResponse(['message' => 'Unknown method.']);
+                    $this->restError('Unknown method.');
             }
         }
         else
         {
-            $body = [
-                'code'    => 405,
-                'message' => 'The requested method not allowed.'
-            ];
-            $this->restResponse($body, 405);
+            $this->restError('The requested method not allowed.', 405);
         }
     }
 
@@ -230,6 +222,21 @@ class Core extends Slim
     }
 
     /**
+     * REST报错
+     *
+     * @param     $message
+     * @param int $code
+     */
+    public function restError($message, $code = 500)
+    {
+        $body = [
+            'code'    => $code,
+            'message' => $message
+        ];
+        $this->restResponse($body, $code);
+    }
+
+    /**
      * GET（SELECT）：从服务器取出资源（一项或多项）。
      *
      * - 完成请求后返回状态码 200 OK
@@ -249,11 +256,7 @@ class Core extends Slim
 
         if ( ! $result)
         {
-            $body = [
-                'code'    => 404,
-                'message' => 'The requested record not found.'
-            ];
-            $this->restResponse($body, 404);
+            $this->restError('The requested record not found.', 404);
         }
         else
         {
@@ -295,7 +298,21 @@ class Core extends Slim
      */
     public function restPost()
     {
+        $result = $this->storage->create($this->data);
 
+        if ($result)
+        {
+            $result = array_shift($result);
+            // 创建成功
+            // 返回资源信息
+            $this->response->headers['Location'] = $this->urlFor('resource-handle', ['resource' => $this->resourcePath . '/' . $result['id']]);
+            $this->restResponse($result, 201);
+        }
+        else
+        {
+            // 创建失败
+            $this->restError('Error occurred while creating object.');
+        }
     }
 
     /**
@@ -352,20 +369,9 @@ class Core extends Slim
      */
     public function restOptions()
     {
-        $result = [
-            'name'        => 'Resource Name',
-            'description' => 'This is a resource',
-            'methods'     => [
-                'GET',
-                'POST'
-            ],
-            'columns'     => [
-                'id',
-                'name',
-                'description',
-            ],
-        ];
+        $data = $this->meta;
+        unset($data['storage']);
 
-        $this->restResponse($result);
+        $this->restResponse($data);
     }
 }

@@ -42,11 +42,32 @@ class PDO extends Base implements StorageInterface
      *
      * @param      $data
      * @param null $primaryID
-     * @return  bool
+     * @return  mixed
      */
     public function create($data, $primaryID = null)
     {
-        // TODO: Implement create() method.
+        $query = $this->conn->createQueryBuilder();
+        $query->insert($this->table);
+
+        $insertData = [];
+        foreach ($data as $k => $v)
+        {
+            $insertData[$this->conn->quoteIdentifier($k)] = ":$k";
+        }
+        $query->values($insertData);
+        $query->setParameters($data);
+
+        $query->execute();
+        $id = $this->conn->lastInsertId();
+
+        if ($id)
+        {
+            return $this->record(['id' => $id]);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /**

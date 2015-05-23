@@ -10,10 +10,7 @@ if ( ! isset($app))
     /** @var \Composer\Autoload\ClassLoader $loader */
     $loader = require 'vendor/autoload.php';
     $loader->addPsr4('', [ROOT_PATH . 'src']);
-}
 
-if ( ! isset($app))
-{
     // SLIM框架实例
     $app = new \rest\Core();
 }

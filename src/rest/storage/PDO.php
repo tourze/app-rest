@@ -121,11 +121,27 @@ class PDO extends Base implements StorageInterface
      *
      * @param $primaryID
      * @param $data
-     * @return bool
+     * @return mixed
      */
     public function update($primaryID, $data)
     {
-        // TODO: Implement update() method.
+        $query = $this->ensurePDO()->createQueryBuilder();
+
+        $query->update($this->table);
+
+        // 更新条件
+        $query->where('id = :id');
+        $query->setParameter('id', $primaryID);
+
+        // 更新内容
+        foreach ($data as $k => $v)
+        {
+            $query->set($k, ":$k");
+            $query->setParameter($k, $v);
+        }
+
+        $query->execute();
+        return true;
     }
 
     /**

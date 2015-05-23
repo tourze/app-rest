@@ -19,7 +19,7 @@ interface StorageInterface
      *
      * @param $primaryID
      * @param $data
-     * @return bool
+     * @return mixed
      */
     public function update($primaryID, $data);
 

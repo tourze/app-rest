@@ -103,8 +103,9 @@ class Core extends Slim
         }
         $this->storage = Storage::instance($this->meta['storage']);
         //unset($this->meta['storage']);
-
         $this->storage->meta =& $this->meta;
+        $this->storage->resourceName =& $this->resourceName;
+        $this->storage->resourceID =& $this->resourceID;
     }
 
     /**
@@ -306,6 +307,7 @@ class Core extends Slim
         {
             $result = array_shift($result);
             // 创建成功
+            $this->resourceID = $result['id'];
             // 返回资源信息
             $this->response->headers['Location'] = $this->urlFor('resource-handle', ['resource' => $this->resourcePath . '/' . $result['id']]);
             $this->restResponse($result, 201);
@@ -327,20 +329,32 @@ class Core extends Slim
      */
     public function restPut()
     {
-        $result = $this->storage->create($this->data, $this->resourceID);
+        // 如果指定的资源ID能查找到，那么当前操作就是更新
+        if ($data = $this->restGetOne())
+        {
+            $result = $this->storage->update($data['id'], $this->data);
+        }
+        // 否则就新建一条指定主键的记录
+        else
+        {
+            // 指定主键
+            $this->data['id'] = $this->resourceID;
+            // 逻辑跟post一样，所以直接调用post方法
+            $this->restPost();
+            return;
+        }
 
+        // 更新操作
         if ($result)
         {
-            $result = array_shift($result);
-            // 创建成功
-            // 返回资源信息
-            $this->response->headers['Location'] = $this->urlFor('resource-handle', ['resource' => $this->resourcePath . '/' . $result['id']]);
-            $this->restResponse($result, 201);
+            // 重新获取一次
+            $record = $this->restGetOne();
+            $this->restResponse($record, 201);
         }
         else
         {
-            // 创建失败
-            $this->restError('Error occurred while creating object.');
+            // 更新失败
+            $this->restError('Error occurred while modifying object.');
         }
     }
 

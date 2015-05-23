@@ -15,26 +15,67 @@ class PDO extends Base implements StorageInterface
     /**
      * @var \Doctrine\DBAL\Connection
      */
-    public $conn;
+    public $conn = null;
 
     /**
      * @var string 表名
      */
     public $table;
 
+    /**
+     * @var string  PDO使用的驱动
+     */
+    public $driver;
+
+    /**
+     * @var string 主机地址
+     */
+    public $host;
+
+    /**
+     * @var string 数据库名
+     */
+    public $dbname;
+
+    /**
+     * @var string 数据库用户
+     */
+    public $user;
+
+    /**
+     * @var string 连接密码
+     */
+    public $password;
+
     public function __construct($params)
     {
-        $dbParams = [
-            'driver'   => $params['driver'],
-            'host'     => $params['host'],
-            'dbname'   => $params['dbname'],
-            'user'     => $params['user'],
-            'password' => $params['password'],
-        ];
+        foreach ($params as $k => $v)
+        {
+            $this->$k = $v;
+        }
+    }
 
-        $this->conn = DriverManager::getConnection($dbParams);
+    /**
+     * 确保返回一个PDO对象
+     *
+     * @return \Doctrine\DBAL\Connection
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function ensurePDO()
+    {
+        if ($this->conn === null)
+        {
+            $dbParams = [
+                'driver'   => $this->driver,
+                'host'     => $this->host,
+                'dbname'   => $this->dbname,
+                'user'     => $this->user,
+                'password' => $this->password,
+            ];
+            $this->conn = DriverManager::getConnection($dbParams);
+        }
 
-        $this->table = $params['table'];
+        return $this->conn;
     }
 
     /**
@@ -51,19 +92,19 @@ class PDO extends Base implements StorageInterface
             $data['id'] = $primaryID;
         }
 
-        $query = $this->conn->createQueryBuilder();
+        $query = $this->ensurePDO()->createQueryBuilder();
         $query->insert($this->table);
 
         $insertData = [];
         foreach ($data as $k => $v)
         {
-            $insertData[$this->conn->quoteIdentifier($k)] = ":$k";
+            $insertData[$this->ensurePDO()->quoteIdentifier($k)] = ":$k";
         }
         $query->values($insertData);
         $query->setParameters($data);
 
         $query->execute();
-        $id = $this->conn->lastInsertId();
+        $id = $this->ensurePDO()->lastInsertId();
 
         if ($id)
         {
@@ -98,12 +139,12 @@ class PDO extends Base implements StorageInterface
      */
     public function record(array $conditions, $limit = 1, $offset = 0, $orderBy = null)
     {
-        $query = $this->conn->createQueryBuilder();
+        $query = $this->ensurePDO()->createQueryBuilder();
 
         $columns = array_keys($this->meta['fields']);
         foreach ($columns as $column)
         {
-            $query->addSelect($this->conn->quoteIdentifier($column));
+            $query->addSelect($this->ensurePDO()->quoteIdentifier($column));
         }
         $query->from($this->table);
 
@@ -144,7 +185,7 @@ class PDO extends Base implements StorageInterface
      */
     public function delete($primaryID)
     {
-        $query = $this->conn->createQueryBuilder();
+        $query = $this->ensurePDO()->createQueryBuilder();
 
         $query->delete($this->table);
         $query->where('id = :id');

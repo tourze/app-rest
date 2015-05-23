@@ -128,9 +128,7 @@ class Core extends Slim
         }
         $this->storage = Storage::instance($this->meta['storage']);
         //unset($this->meta['storage']);
-        $this->storage->meta =& $this->meta;
-        $this->storage->resourceName =& $this->resourceName;
-        $this->storage->resourceID =& $this->resourceID;
+        $this->storage->app =& $this;
     }
 
     /**

@@ -157,7 +157,7 @@ class PDO extends Base implements StorageInterface
     {
         $query = $this->ensurePDO()->createQueryBuilder();
 
-        $columns = array_keys($this->meta['fields']);
+        $columns = array_keys($this->app->meta['fields']);
         foreach ($columns as $column)
         {
             $query->addSelect($this->ensurePDO()->quoteIdentifier($column));

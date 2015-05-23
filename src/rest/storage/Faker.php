@@ -82,7 +82,7 @@ class Faker extends Base implements StorageInterface
         $faker = Factory::create();
         $result = [];
 
-        foreach ($this->meta['fields'] as $field => $fieldConfig)
+        foreach ($this->app->meta['fields'] as $field => $fieldConfig)
         {
             try
             {

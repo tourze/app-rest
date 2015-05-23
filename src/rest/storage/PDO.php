@@ -2,8 +2,41 @@
 
 namespace rest\storage;
 
+use Doctrine\DBAL\DriverManager;
+
+/**
+ * PDO连接
+ *
+ * @package rest\storage
+ */
 class PDO extends Base implements StorageInterface
 {
+
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    public $conn;
+
+    /**
+     * @var string 表名
+     */
+    public $table;
+
+    public function __construct($params)
+    {
+        $dbParams = [
+            'driver'   => $params['driver'],
+            'host'     => $params['host'],
+            'dbname'   => $params['dbname'],
+            'user'     => $params['user'],
+            'password' => $params['password'],
+        ];
+
+        $this->conn = DriverManager::getConnection($dbParams);
+
+        $this->table = $params['table'];
+    }
+
     /**
      * 创建数据
      *
@@ -39,7 +72,42 @@ class PDO extends Base implements StorageInterface
      */
     public function record(array $conditions, $limit = 1, $offset = 0, $orderBy = null)
     {
-        // TODO: Implement record() method.
+        $query = $this->conn->createQueryBuilder();
+
+        $columns = array_keys($this->meta['fields']);
+        foreach ($columns as $column)
+        {
+            $query->addSelect($this->conn->quoteIdentifier($column));
+        }
+        $query->from($this->table);
+
+        // 判断条件
+        foreach ($conditions as $key => $value)
+        {
+            $query->where("$key = :$key");
+            $query->setParameter($key, $value);
+        }
+
+        if ($orderBy)
+        {
+            if (is_array($orderBy))
+            {
+                foreach ($orderBy as $sort => $order)
+                {
+                    $query->orderBy($sort, $order);
+                }
+            }
+            else
+            {
+                $query->orderBy($orderBy);
+            }
+        }
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+
+        $result = $query->execute()->fetchAll();
+
+        return $result;
     }
 
     /**

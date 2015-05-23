@@ -26,7 +26,7 @@ class Meta
         $resourceFile = ROOT_PATH . self::$resourceDir . DIRECTORY_SEPARATOR . $resource . '.yaml';
         if ( ! is_file($resourceFile))
         {
-            throw new MetaException('The requested resource not found.');
+            return false;
         }
 
         // 读取yaml内容，并解析为php数组

@@ -2,7 +2,6 @@
 
 namespace rest;
 
-use Faker\Factory;
 use rest\exception\RestException;
 use rest\storage\Base;
 use rest\storage\StorageInterface;
@@ -43,6 +42,8 @@ class Core extends Slim
      */
     public $storage;
 
+    public $method;
+
     /**
      * @var array 请求参数
      */
@@ -54,6 +55,7 @@ class Core extends Slim
     public $behavior = [
         '_limit'  => 30,
         '_offset' => 0,
+        '_sort'   => ['id' => 'DESC'],
     ];
 
     /**
@@ -84,6 +86,15 @@ class Core extends Slim
 
         // 获取得到meta的配置信息
         $this->meta = Meta::get($this->resourceName);
+        if ( ! $this->meta)
+        {
+            $body = [
+                'code'    => 404,
+                'message' => 'The requested resource not found.'
+            ];
+            $this->restResponse($body, 404);
+            return;
+        }
 
         // 根据meta信息加载storage
         if ( ! isset($this->meta['storage']))
@@ -91,7 +102,7 @@ class Core extends Slim
             throw new RestException('Unable to locate the storage.');
         }
         $this->storage = Storage::instance($this->meta['storage']);
-        unset($this->meta['storage']);
+        //unset($this->meta['storage']);
 
         $this->storage->meta =& $this->meta;
     }
@@ -110,6 +121,9 @@ class Core extends Slim
         }
     }
 
+    /**
+     * 加载行为逻辑
+     */
     public function loadBehavior()
     {
         foreach ($this->request->get() as $k => $v)
@@ -128,44 +142,67 @@ class Core extends Slim
      */
     public function dispatchMethod($method = null)
     {
+        if ( ! $this->meta)
+        {
+            return;
+        }
         if ($method === null)
         {
-            $method = $this->request->getMethod();
+            $method = strtolower($this->request->getMethod());
         }
 
-        switch ($method)
+        $methodConfig = $this->meta['method'];
+
+        if (isset($methodConfig[$method]) && $methodConfig[$method])
         {
-            case 'GET':
-                $this->resetGet();
-                break;
-            case 'POST':
-                $this->restPost();
-                break;
-            case 'PUT':
-                $this->restPut();
-                break;
-            case 'PATCH':
-                $this->restPatch();
-                break;
-            case 'DELETE':
-                $this->restDelete();
-                break;
-            case 'HEAD':
-                $this->restHead();
-                break;
-            case 'OPTIONS':
-                $this->restOptions();
-                break;
-            default:
-                $this->restResponse(['message' => 'Unknown method.']);
+            switch ($method)
+            {
+                case 'get':
+                    $this->resetGet();
+                    break;
+                case 'post':
+                    $this->restPost();
+                    break;
+                case 'put':
+                    $this->restPut();
+                    break;
+                case 'patch':
+                    $this->restPatch();
+                    break;
+                case 'delete':
+                    $this->restDelete();
+                    break;
+                case 'head':
+                    $this->restHead();
+                    break;
+                case 'options':
+                    $this->restOptions();
+                    break;
+                default:
+                    $this->restResponse(['message' => 'Unknown method.']);
+            }
+        }
+        else
+        {
+            $body = [
+                'code'    => 400,
+                'message' => 'The requested method not allowed.'
+            ];
+            $this->restResponse($body, 400);
         }
     }
 
+    /**
+     * 返回json数据
+     *
+     * @param     $body
+     * @param int $code
+     */
     public function restResponse($body, $code = 200)
     {
         $this->response->setStatus($code);
         $this->response->headers['content-type'] = 'application/json';
-        echo json_encode($body);
+        $this->response->setBody(json_encode($body));
     }
 
     /**
@@ -196,12 +233,18 @@ class Core extends Slim
      */
     public function restGetOne()
     {
-        return $this->storage->record(['id' => $this->resourceID], 1);
+        $result = $this->storage->record(['id' => $this->resourceID], 1);
+        return array_shift($result);
     }
 
     public function restGetMulti()
     {
-        return $this->storage->record($this->query, 10);
+        return $this->storage->record(
+            $this->query,
+            $this->behavior['_limit'],
+            $this->behavior['_offset'],
+            $this->behavior['_sort']
+        );
     }
 
     /**

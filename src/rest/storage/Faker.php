@@ -51,7 +51,10 @@ class Faker extends Base implements StorageInterface
         // 获取单挑记录
         if ($limit == 1)
         {
-            $result = $this->generateFakeRecord();
+            $record = $this->generateFakeRecord();
+            $record = array_merge($record, $conditions);
+
+            $result[] = $record;
         }
         else
         {

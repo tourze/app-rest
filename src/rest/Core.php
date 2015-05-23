@@ -63,6 +63,31 @@ class Core extends Slim
     ];
 
     /**
+     * 自定义的配置加载方法
+     *
+     * @param $name
+     * @return array
+     */
+    public function loadConfig($name)
+    {
+        $files = [
+            ROOT_PATH . 'config/' . $name . '.php',
+            ROOT_PATH . 'config/' . $name . '-local.php',
+        ];
+        $result = [];
+
+        foreach ($files as $file)
+        {
+            if (is_file($file))
+            {
+                $result = array_merge($result, @include $file);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * 加载和解析资源路径
      *
      * @param $resource

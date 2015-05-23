@@ -30,7 +30,7 @@ class Core extends Slim
     /**
      * @var int 当前请求的资源ID
      */
-    public $resourceID = 0;
+    public $resourceID = null;
 
     /**
      * @var mixed 当前的meta数据
@@ -42,17 +42,21 @@ class Core extends Slim
      */
     public $storage;
 
-    public $method;
-
     /**
      * @var array 请求参数
      */
     public $query = [];
 
     /**
+     * @var array 提交的数据
+     */
+    public $data = [];
+
+    /**
      * @var array 一些行为参数
      */
     public $behavior = [
+        '_pretty' => false,
         '_limit'  => 30,
         '_offset' => 0,
         '_sort'   => ['id' => 'DESC'],
@@ -122,6 +126,17 @@ class Core extends Slim
     }
 
     /**
+     * 加载数据，POST/PUT/PATCH会用到
+     */
+    public function loadData()
+    {
+        if ($this->request->post())
+        {
+            $this->data = $this->request->post();
+        }
+    }
+
+    /**
      * 加载行为逻辑
      */
     public function loadBehavior()
@@ -185,10 +200,10 @@ class Core extends Slim
         else
         {
             $body = [
-                'code'    => 400,
+                'code'    => 405,
                 'message' => 'The requested method not allowed.'
             ];
-            $this->restResponse($body, 400);
+            $this->restResponse($body, 405);
         }
     }
 
@@ -200,9 +215,18 @@ class Core extends Slim
      */
     public function restResponse($body, $code = 200)
     {
+        if ($this->behavior['_pretty'])
+        {
+            $content = json_encode($body, JSON_PRETTY_PRINT);
+        }
+        else
+        {
+            $content = json_encode($body);
+        }
+
         $this->response->setStatus($code);
         $this->response->headers['content-type'] = 'application/json';
-        $this->response->setBody(json_encode($body));
+        $this->response->setBody($content);
     }
 
     /**
@@ -214,7 +238,7 @@ class Core extends Slim
     public function resetGet()
     {
         // 有ID的情况下，获取单条记录
-        if ($this->resourceID)
+        if (is_numeric($this->resourceID))
         {
             $result = $this->restGetOne();
         }
@@ -223,7 +247,18 @@ class Core extends Slim
             $result = $this->restGetMulti();
         }
 
-        $this->restResponse($result);
+        if ( ! $result)
+        {
+            $body = [
+                'code'    => 404,
+                'message' => 'The requested record not found.'
+            ];
+            $this->restResponse($body, 404);
+        }
+        else
+        {
+            $this->restResponse($result);
+        }
     }
 
     /**
@@ -237,6 +272,11 @@ class Core extends Slim
         return array_shift($result);
     }
 
+    /**
+     * 获取多条记录
+     *
+     * @return mixed
+     */
     public function restGetMulti()
     {
         return $this->storage->record(
@@ -255,6 +295,7 @@ class Core extends Slim
      */
     public function restPost()
     {
+
     }
 
     /**
@@ -289,11 +330,21 @@ class Core extends Slim
     }
 
     /**
-     * 确定字段或元数据是否存在，存在则200，否则404
+     * 检测指定的资源是否存在存在则200，否则404
      */
     public function restHead()
     {
-        $this->restResponse([], 404);
+        $data = $this->restGetOne();
+
+        if ($data)
+        {
+            $code = 200;
+        }
+        else
+        {
+            $code = 404;
+        }
+        $this->restResponse(null, $code);
     }
 
     /**

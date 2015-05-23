@@ -7,6 +7,7 @@ storage:
   password: admin
   table: geo_country
 method:
+  head: true
   get: true
 fields:
   id:

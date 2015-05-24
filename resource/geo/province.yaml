@@ -5,7 +5,7 @@ storage:
   dbname: com.tourze.rest
   user: admin
   password: admin
-  table: geo_country
+  table: geo_province
 method:
   head: true
   options: true
@@ -19,11 +19,13 @@ fields:
   id:
     type: integer
     generator: AUTO_INCREMENT
+  country_id:
+    type: integer
   alias:
     type: string
   name:
     type: string
-  english:
+  short:
     type: string
   desc:
     type: string

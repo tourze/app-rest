@@ -5,7 +5,7 @@ storage:
   dbname: com.tourze.rest
   user: admin
   password: admin
-  table: geo_country
+  table: geo_district
 method:
   head: true
   options: true
@@ -19,11 +19,16 @@ fields:
   id:
     type: integer
     generator: AUTO_INCREMENT
-  alias:
-    type: string
+  city_id:
+    type: integer
+    default: 0
   name:
     type: string
-  english:
+  short:
+    type: string
+  zip_code:
+    type: string
+  zone_code:
     type: string
   desc:
     type: string

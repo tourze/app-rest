@@ -5,7 +5,7 @@ storage:
   dbname: com.tourze.rest
   user: admin
   password: admin
-  table: geo_country
+  table: school_school
 method:
   head: true
   options: true
@@ -19,14 +19,22 @@ fields:
   id:
     type: integer
     generator: AUTO_INCREMENT
+  province_id:
+    type: integer
+    default: 0
+  city_id:
+    type: integer
+    default: 0
+  district_id:
+    type: integer
+    default: 0
   alias:
     type: string
   name:
     type: string
-  english:
-    type: string
-  desc:
-    type: string
+  is_valid:
+    type: integer
+    default: 0
   date_created:
     type: integer
     length: 10

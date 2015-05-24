@@ -48,6 +48,11 @@ class Core extends Slim
     public $cache;
 
     /**
+     * @var Logic
+     */
+    public $logic;
+
+    /**
      * @var array 请求参数
      */
     public $query = [];

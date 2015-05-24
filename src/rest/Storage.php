@@ -15,7 +15,6 @@ class Storage
     public static $defaultType = 'csv';
 
     public static $typeMapping = [
-        'csv'  => '\rest\storage\Csv',
         'pdo'  => '\rest\storage\PDO',
         'fake' => '\rest\storage\Faker',
     ];

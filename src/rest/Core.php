@@ -43,6 +43,11 @@ class Core extends Slim
     public $storage;
 
     /**
+     * @var Cache
+     */
+    public $cache;
+
+    /**
      * @var array 请求参数
      */
     public $query = [];
@@ -127,8 +132,11 @@ class Core extends Slim
             throw new RestException('Unable to locate the storage.');
         }
         $this->storage = Storage::instance($this->meta['storage']);
-        //unset($this->meta['storage']);
         $this->storage->app =& $this;
+
+        // 缓存
+        $this->cache = new Cache;
+        $this->cache->app =& $this;
     }
 
     /**
@@ -297,8 +305,28 @@ class Core extends Slim
      */
     public function restGetOne()
     {
-        $result = $this->storage->record(['id' => $this->resourceID], 1);
-        return array_shift($result);
+        // 先尝试读缓存
+        $key = str_replace(['/', '\\'], '_', $this->resourceName) . ':' . $this->resourceID;
+        if ( ! $result = $this->cache->get($key))
+        {
+            // 缓存读取失败
+            // 从storage读取
+            $result = $this->storage->record(['id' => $this->resourceID], 1);
+            $result = array_shift($result);
+
+            // 保存到缓存
+            if ($result)
+            {
+                $this->cache->set($key, json_encode($result), 60 * 5);
+            }
+        }
+        else
+        {
+            $result = json_decode($result, true);
+        }
+
+        // 返回结果
+        return $result;
     }
 
     /**
@@ -308,12 +336,38 @@ class Core extends Slim
      */
     public function restGetMulti()
     {
-        return $this->storage->record(
+        $queryHash = json_encode([
             $this->query,
             $this->behavior['_limit'],
             $this->behavior['_offset'],
             $this->behavior['_sort']
-        );
+        ]);
+        $queryHash = sha1($queryHash);
+        $key = str_replace(['/', '\\'], '_', $this->resourceName) . ':list:' . $queryHash;
+
+        if ( ! $result = $this->cache->get($key))
+        {
+            // 缓存读取失败
+            // 从storage读取
+            $result = $this->storage->record(
+                $this->query,
+                $this->behavior['_limit'],
+                $this->behavior['_offset'],
+                $this->behavior['_sort']
+            );
+
+            // 保存到缓存
+            if ($result)
+            {
+                $this->cache->set($key, json_encode($result), 60 * 5);
+            }
+        }
+        else
+        {
+            $result = json_decode($result, true);
+        }
+
+        return $result;
     }
 
     /**
@@ -352,13 +406,8 @@ class Core extends Slim
      */
     public function restPut()
     {
-        // 如果指定的资源ID能查找到，那么当前操作就是更新
-        if ($data = $this->restGetOne())
-        {
-            $result = $this->storage->update($data['id'], $this->data);
-        }
-        // 否则就新建一条指定主键的记录
-        else
+        // 如果指定的资源ID查找不到，那么当前操作就是创建资源
+        if ( ! $data = $this->restGetOne())
         {
             // 指定主键
             $this->data['id'] = $this->resourceID;
@@ -367,9 +416,14 @@ class Core extends Slim
             return;
         }
 
-        // 更新操作
+        // 更新资源
+        $result = $this->storage->update($data['id'], $this->data);
+
         if ($result)
         {
+            // 删除缓存
+            $key = str_replace(['/', '\\'], '_', $this->resourceName) . ':' . $this->resourceID;
+            $this->cache->del($key);
             // 重新获取一次
             $record = $this->restGetOne();
             $this->restResponse($record, 201);
@@ -408,6 +462,9 @@ class Core extends Slim
 
         if ($this->storage->delete($data['id']))
         {
+            // 删除缓存
+            $key = str_replace(['/', '\\'], '_', $this->resourceName) . ':' . $this->resourceID;
+            $this->cache->del($key);
             $this->restError('The record was removed.', 204);
         }
         else

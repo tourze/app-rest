@@ -2,8 +2,39 @@
 
 namespace rest\storage;
 
+use EasyCSV\Reader;
+
 class Csv extends Base implements StorageInterface
 {
+
+    /**
+     * @var Reader
+     */
+    public $reader = null;
+
+    public $writer = null;
+
+    public $file = null;
+
+    public $delimiter = "\t";
+
+    public $enclosure = '"';
+
+    /**
+     * @return \EasyCSV\Reader
+     */
+    public function ensureReader()
+    {
+        if ($this->reader === null)
+        {
+            $this->reader = new Reader($this->file);
+            $this->reader->setDelimiter($this->delimiter);
+            $this->reader->setEnclosure($this->enclosure);
+        }
+
+        return $this->reader;
+    }
+
     /**
      * 创建数据
      *
@@ -39,7 +70,55 @@ class Csv extends Base implements StorageInterface
      */
     public function record(array $conditions, $limit = 1, $offset = 0, $orderBy = null)
     {
-        // TODO: Implement record() method.
+        $i = 0;
+        $records = [];
+        $conditionsLineCount = count($conditions);
+
+        $startLine = $offset + 2; // 一般第一行都作为csv的字段名了，所以从第二行开始
+        $resourceColumns = $this->getSourceColumns();
+
+        while ($row = $this->ensureReader()->getRow())
+        {
+            if ($this->ensureReader()->getLineNumber() < $startLine)
+            {
+                continue;
+            }
+
+            $matchCount = 0;
+            foreach ($conditions as $k => $v)
+            {
+                // 暂时不支持$v是数组的情形
+                if (isset($row[$k]) && $row[$k] == $v)
+                {
+                    $matchCount++;
+                }
+            }
+
+            if ($matchCount == $conditionsLineCount)
+            {
+                $addRow = [];
+                foreach ($resourceColumns as $col)
+                {
+                    if (isset($row[$col]))
+                    {
+                        $addRow[$col] = $row[$col];
+                    }
+                    else
+                    {
+                        $addRow[$col] = null;
+                    }
+                }
+                $records[] = $addRow;
+                $i++;
+            }
+
+            if ($i >= $limit)
+            {
+                break;
+            }
+        }
+
+        return $records;
     }
 
     /**

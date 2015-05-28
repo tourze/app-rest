@@ -47,14 +47,6 @@ class PDO extends Base implements StorageInterface
      */
     public $password;
 
-    public function __construct($params)
-    {
-        foreach ($params as $k => $v)
-        {
-            $this->$k = $v;
-        }
-    }
-
     /**
      * 确保返回一个PDO对象
      *
@@ -157,7 +149,7 @@ class PDO extends Base implements StorageInterface
     {
         $query = $this->ensurePDO()->createQueryBuilder();
 
-        $columns = array_keys($this->app->meta['fields']);
+        $columns = $this->getSourceColumns();
         foreach ($columns as $column)
         {
             $query->addSelect($this->ensurePDO()->quoteIdentifier($column));

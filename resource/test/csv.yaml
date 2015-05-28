@@ -1,0 +1,12 @@
+storage:
+  type: csv
+  delimiter: ,
+  file: /vagrant/wwwroot/com.tourze.rest/deploy/test/member.csv
+fields:
+  id:
+    type: integer
+    generator: AUTO_INCREMENT
+  username:
+    type: string
+  email:
+    type: string

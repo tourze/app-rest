@@ -184,6 +184,23 @@ class Core extends Slim
     }
 
     /**
+     * 获取http方法配置
+     *
+     * @return array
+     */
+    public function getMetaMethodConfig()
+    {
+        if ( ! isset($this->meta['method']))
+        {
+            return [
+                'get' => true,
+            ];
+        }
+
+        return $this->meta['method'];
+    }
+
+    /**
      * 根据HTTP方法分派要执行的函数
      *
      * @param null $method
@@ -200,7 +217,7 @@ class Core extends Slim
         }
 
         //$this->response->headers['X-Powered-By'] = 'Rest Server';
-        $methodConfig = $this->meta['method'];
+        $methodConfig = $this->getMetaMethodConfig();
 
         if (isset($methodConfig[$method]) && $methodConfig[$method])
         {
@@ -343,8 +360,8 @@ class Core extends Slim
     {
         $queryHash = json_encode([
             $this->query,
-            $this->behavior['_limit'],
-            $this->behavior['_offset'],
+            (int) $this->behavior['_limit'],
+            (int) $this->behavior['_offset'],
             $this->behavior['_sort']
         ]);
         $queryHash = sha1($queryHash);

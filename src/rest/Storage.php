@@ -17,6 +17,7 @@ class Storage
     public static $typeMapping = [
         'pdo'  => '\rest\storage\PDO',
         'fake' => '\rest\storage\Faker',
+        'csv' => '\rest\storage\CSV',
     ];
 
     /**

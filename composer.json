@@ -15,7 +15,8 @@
     "fzaninotto/faker": "^1.4",
     "symfony/yaml": "^2.6",
     "doctrine/dbal": "^2.5",
-    "jwage/easy-csv": "^0.0.2"
+    "jwage/easy-csv": "^0.0.2",
+    "phpunit/phpunit": "^4.7"
   },
   "repositories": [
     {

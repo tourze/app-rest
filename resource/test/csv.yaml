@@ -1,7 +1,7 @@
 storage:
   type: csv
   delimiter: ,
-  file: /vagrant/wwwroot/com.tourze.rest/deploy/test/member.csv
+  file: /vagrant/wwwroot/lzp/com.tourze.rest/deploy/test/member.csv
 fields:
   id:
     type: integer

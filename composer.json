@@ -10,15 +10,21 @@
     }
   ],
   "require": {
-    "slim/slim": "^2.6",
-    "predis/predis": "^1.0",
+    "tourze/core": "dev-master",
     "fzaninotto/faker": "^1.4",
     "symfony/yaml": "^2.6",
-    "doctrine/dbal": "^2.5",
-    "jwage/easy-csv": "^0.0.2",
-    "phpunit/phpunit": "^4.7"
+    "jwage/easy-csv": "^0.0.2"
+  },
+  "autoload": {
+    "psr-0": {
+      "rest\\": "src/"
+    }
   },
   "repositories": [
+    {
+      "type": "git",
+      "url": "https://git.oschina.net/ywisax/com.tourze.php.core.git"
+    },
     {
       "type": "composer",
       "url": "http://php.composer.org/repo/packagist/"

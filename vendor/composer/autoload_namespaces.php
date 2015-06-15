@@ -6,11 +6,20 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'phpDocumentor' => array($vendorDir . '/phpdocumentor/reflection-docblock/src'),
+    'rest\\' => array($baseDir . '/src'),
+    'Whoops' => array($vendorDir . '/filp/whoops/src'),
+    'Twig_' => array($vendorDir . '/twig/twig/lib'),
+    'SlimController' => array($vendorDir . '/slimcontroller/slimcontroller/src'),
     'Slim' => array($vendorDir . '/slim/slim'),
-    'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
+    'SecurityLib' => array($vendorDir . '/ircmaxell/security-lib/lib'),
+    'RandomLib' => array($vendorDir . '/ircmaxell/random-lib/lib'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log'),
+    'Illuminate\\Support' => array($vendorDir . '/illuminate/support'),
+    'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
+    'Guzzle\\Tests' => array($vendorDir . '/guzzle/guzzle/tests'),
+    'Guzzle' => array($vendorDir . '/guzzle/guzzle/src'),
+    'Egulias\\' => array($vendorDir . '/egulias/email-validator/src'),
     'EasyCSV' => array($vendorDir . '/jwage/easy-csv/lib'),
-    'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src'),
     'Doctrine\\DBAL\\' => array($vendorDir . '/doctrine/dbal/lib'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
     'Doctrine\\Common\\Inflector\\' => array($vendorDir . '/doctrine/inflector/lib'),

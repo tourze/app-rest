@@ -3,14 +3,10 @@
 namespace rest;
 
 use Predis\Client;
+use tourze\Redis\Redis;
 
 class Cache
 {
-
-    /**
-     * @var \rest\Core
-     */
-    public $app;
 
     /**
      * @var Client 默认使用redis作为缓存
@@ -18,18 +14,11 @@ class Cache
     public $redis = null;
 
     /**
-     * @return \Predis\Client
+     * @return \tourze\Redis\Client
      */
     public function ensureCache()
     {
-        if ($this->redis === null)
-        {
-            // redis操作相关
-            $redisConfig = $this->app->loadConfig('redis');
-            $this->redis = new Client($redisConfig['conn'], $redisConfig['options']);
-        }
-
-        return $this->redis;
+       return Redis::instance();
     }
 
     public function generateCacheKey()
@@ -47,7 +36,7 @@ class Cache
      * @return string
      */
     public function get($key)
-    {;
+    {
         return $this->ensureCache()->get($key);
     }
 

@@ -1,26 +1,19 @@
 <?php
 
+use tourze\Base\Base;
+use tourze\Base\Flow;
+
 require '../bootstrap.php';
 
 /**
- * 一个请求可以分成几个步骤：
- *
- * 1. 解析请求路径，并获取meta数据
- * 2. 根据meta数据，获取对应的storage
- * 3. 其他处理
+ * SDK启动
  */
+$app = Base::instance();
 
-$app->map('/:resource', function ($resource) use ($app)
-{
-    // 加载资源
-    $app->loadResource($resource);
-    $app->loadQuery();
-    $app->loadData();
-    $app->loadBehavior();
-    $app->dispatchMethod();
-})
-    ->name('resource-handle')
-    ->conditions(['resource' => '(.*)'])
-    ->via('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD');
-
-$app->run();
+// 主工作流
+$flow = Flow::instance('sdk');
+$flow->contexts = [
+    'app'     => $app,
+];
+$flow->layers = Base::$layers;
+$flow->start();

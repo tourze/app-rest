@@ -5,16 +5,18 @@ namespace rest;
 use rest\exception\RestException;
 use rest\storage\Base;
 use rest\storage\StorageInterface;
-use Slim\Slim;
+use tourze\Base\Object;
+use tourze\Http\HttpRequest;
+use tourze\Http\HttpResponse;
 
 /**
- * 扩展slim将核心，使其支持restful风格。
+ * restful风格核心类
  * 参考文章：
  *
  * https://github.com/bolasblack/http-api-guide#user-content-http-%E5%8D%8F%E8%AE%AE
  * http://www.ruanyifeng.com/blog/2014/05/restful_api.html
  */
-class Core extends Slim
+class Core extends Object
 {
 
     /**
@@ -31,6 +33,16 @@ class Core extends Slim
      * @var int 当前请求的资源ID
      */
     public $resourceID = null;
+
+    /**
+     * @var HttpRequest
+     */
+    public $request;
+
+    /**
+     * @var HttpResponse
+     */
+    public $response;
 
     /**
      * @var mixed 当前的meta数据
@@ -71,31 +83,6 @@ class Core extends Slim
         '_offset' => 0,
         '_sort'   => ['id' => 'DESC'],
     ];
-
-    /**
-     * 自定义的配置加载方法
-     *
-     * @param $name
-     * @return array
-     */
-    public function loadConfig($name)
-    {
-        $files = [
-            ROOT_PATH . 'config/' . $name . '.php',
-            ROOT_PATH . 'config/' . $name . '-local.php',
-        ];
-        $result = [];
-
-        foreach ($files as $file)
-        {
-            if (is_file($file))
-            {
-                $result = array_merge($result, @include $file);
-            }
-        }
-
-        return $result;
-    }
 
     /**
      * 加载和解析资源路径
@@ -141,7 +128,6 @@ class Core extends Slim
 
         // 缓存
         $this->cache = new Cache;
-        $this->cache->app =& $this;
     }
 
     /**
@@ -149,7 +135,7 @@ class Core extends Slim
      */
     public function loadQuery()
     {
-        foreach ($this->request->get() as $k => $v)
+        foreach ($this->request->query() as $k => $v)
         {
             if ($k{0} != '_')
             {
@@ -174,7 +160,7 @@ class Core extends Slim
      */
     public function loadBehavior()
     {
-        foreach ($this->request->get() as $k => $v)
+        foreach ($this->request->query() as $k => $v)
         {
             if ($k{0} == '_')
             {
@@ -213,7 +199,7 @@ class Core extends Slim
         }
         if ($method === null)
         {
-            $method = strtolower($this->request->getMethod());
+            $method = strtolower($this->request->method);
         }
 
         //$this->response->headers['X-Powered-By'] = 'Rest Server';
@@ -271,9 +257,9 @@ class Core extends Slim
             $content = json_encode($body);
         }
 
-        $this->response->setStatus($code);
-        $this->response->headers['content-type'] = 'application/json';
-        $this->response->setBody($content);
+        $this->response->status = $code;
+        $this->response->headers('Content-Type', 'application/json');
+        $this->response->body = $content;
     }
 
     /**
@@ -288,7 +274,7 @@ class Core extends Slim
             'code'    => $code,
             'message' => $message
         ];
-        $this->response->headers['Rest-Message'] = $message;
+        $this->response->headers('Rest-Message', $message);
         $this->restResponse($body, $code);
     }
 

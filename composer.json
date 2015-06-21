@@ -11,6 +11,7 @@
   ],
   "require": {
     "tourze/core": "dev-master",
+    "tourze/tourze": "dev-master",
     "fzaninotto/faker": "^1.4",
     "symfony/yaml": "^2.6",
     "jwage/easy-csv": "^0.0.2"
@@ -21,6 +22,10 @@
     }
   },
   "repositories": [
+    {
+      "type": "git",
+      "url": "https://git.oschina.net/ywisax/com.tourze.php.tourze.git"
+    },
     {
       "type": "git",
       "url": "https://git.oschina.net/ywisax/com.tourze.php.core.git"

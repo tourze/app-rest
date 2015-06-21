@@ -6,7 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'tourze\\' => array($vendorDir . '/tourze/core/src'),
+    'tourze\\' => array($vendorDir . '/tourze/tourze/src', $vendorDir . '/tourze/core/src'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),
     'Riimu\\Kit\\SecureRandom\\' => array($vendorDir . '/riimu/kit-securerandom/src'),

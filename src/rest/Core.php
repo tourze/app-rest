@@ -2,7 +2,7 @@
 
 namespace rest;
 
-use rest\exception\RestException;
+use rest\Exception\RestException;
 use rest\Storage\Base;
 use rest\Storage\StorageInterface;
 use tourze\Base\Helper\Arr;
@@ -90,8 +90,8 @@ class Core extends Object
      * 加载和解析资源路径
      *
      * @param $resource
-     * @throws \rest\exception\MetaException
-     * @throws \rest\exception\RestException
+     * @throws \rest\Exception\MetaException
+     * @throws \rest\Exception\RestException
      */
     public function loadResource($resource = null)
     {

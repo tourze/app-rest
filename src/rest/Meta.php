@@ -19,7 +19,7 @@ class Meta
      *
      * @param $resource
      * @return array|string
-     * @throws \rest\exception\MetaException
+     * @throws \rest\Exception\MetaException
      */
     public static function get($resource)
     {

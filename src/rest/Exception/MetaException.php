@@ -1,6 +1,6 @@
 <?php
 
-namespace rest\exception;
+namespace rest\Exception;
 
 use rest\Exception;
 

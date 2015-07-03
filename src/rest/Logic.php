@@ -11,9 +11,9 @@ class Logic
 {
 
     public $classMap = [
-        'date_created'    => '\rest\logic\DateCreated',
-        'date_updated'    => '\rest\logic\DateUpdated',
-        'result_not_null' => '\rest\logic\ResultNotNull',
+        'date_created'    => '\rest\Logic\DateCreated',
+        'date_updated'    => '\rest\Logic\DateUpdated',
+        'result_not_null' => '\rest\Logic\ResultNotNull',
     ];
 
 }

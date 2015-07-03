@@ -1,11 +1,11 @@
 <?php
 
-namespace rest\logic;
+namespace rest\Logic;
 
 /**
  * 返回结果不允许存在null
  *
- * @package rest\logic
+ * @package rest\Logic
  */
 class ResultNotNull extends Base implements LogicInterface
 {

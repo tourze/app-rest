@@ -1,6 +1,6 @@
 <?php
 
-namespace rest\logic;
+namespace rest\Logic;
 
 class Base
 {

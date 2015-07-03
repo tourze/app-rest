@@ -1,11 +1,11 @@
 <?php
 
-namespace rest\logic;
+namespace rest\Logic;
 
 /**
  * 最基础的日期处理
  *
- * @package rest\logic
+ * @package rest\Logic
  */
 class Date extends Base implements LogicInterface
 {

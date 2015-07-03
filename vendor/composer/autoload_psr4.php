@@ -10,8 +10,6 @@ return array(
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Symfony\\Component\\Filesystem\\' => array($vendorDir . '/symfony/filesystem'),
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),
-    'Riimu\\Kit\\SecureRandom\\' => array($vendorDir . '/riimu/kit-securerandom/src'),
-    'Riimu\\Kit\\CSRF\\' => array($vendorDir . '/riimu/kit-csrf/src'),
     'Rhumsaa\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),
     'Respect\\Validation\\' => array($vendorDir . '/respect/validation/library'),
     'Predis\\' => array($vendorDir . '/predis/predis/src'),
@@ -19,9 +17,6 @@ return array(
     'Noodlehaus\\' => array($vendorDir . '/hassankhan/config/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'League\\OAuth2\\Client\\' => array($vendorDir . '/league/oauth2-client/src'),
-    'Hoa\\Stream\\' => array($vendorDir . '/hoa/stream'),
-    'Hoa\\Mime\\' => array($vendorDir . '/hoa/mime'),
-    'Hoa\\Core\\' => array($vendorDir . '/hoa/core'),
     'Faker\\' => array($vendorDir . '/fzaninotto/faker/src/Faker'),
     'Euantor\\SimpleGravatar\\' => array($vendorDir . '/euantor/simple-gravatar/src'),
 );

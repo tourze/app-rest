@@ -3,11 +3,13 @@
 namespace rest;
 
 use rest\exception\RestException;
-use rest\storage\Base;
-use rest\storage\StorageInterface;
+use rest\Storage\Base;
+use rest\Storage\StorageInterface;
+use tourze\Base\Helper\Arr;
 use tourze\Base\Object;
-use tourze\Http\HttpRequest;
-use tourze\Http\HttpResponse;
+use tourze\Http\Request;
+use tourze\Http\Response;
+use tourze\Route\Route;
 
 /**
  * restful风格核心类
@@ -35,12 +37,12 @@ class Core extends Object
     public $resourceID = null;
 
     /**
-     * @var HttpRequest
+     * @var Request
      */
     public $request;
 
     /**
-     * @var HttpResponse
+     * @var Response
      */
     public $response;
 
@@ -248,17 +250,53 @@ class Core extends Object
      */
     public function restResponse($body, $code = 200)
     {
-        if ($this->behavior['_pretty'])
+        if ( ! isset($this->behavior['_format']))
         {
-            $content = json_encode($body, JSON_PRETTY_PRINT);
+            $this->behavior['_format'] = 'json';
         }
-        else
+
+        switch ($this->behavior['_format'])
         {
-            $content = json_encode($body);
+            case 'json':
+                if ($this->behavior['_pretty'])
+                {
+                    $content = json_encode($body, JSON_PRETTY_PRINT);
+                }
+                else
+                {
+                    $content = json_encode($body);
+                }
+                $contentType = 'application/json';
+                break;
+
+            case 'jsonp':
+                if ($this->behavior['_pretty'])
+                {
+                    $content = json_encode($body, JSON_PRETTY_PRINT);
+                }
+                else
+                {
+                    $content = json_encode($body);
+                }
+                $content = Arr::get($this->behavior, '_callback') . '(' . $content . ')';
+
+                $contentType = 'application/json';
+                break;
+
+            default:
+                if ($this->behavior['_pretty'])
+                {
+                    $content = json_encode($body, JSON_PRETTY_PRINT);
+                }
+                else
+                {
+                    $content = json_encode($body);
+                }
+                $contentType = 'application/json';
         }
 
         $this->response->status = $code;
-        $this->response->headers('Content-Type', 'application/json');
+        $this->response->headers('Content-Type', $contentType);
         $this->response->body = $content;
     }
 
@@ -315,7 +353,11 @@ class Core extends Object
     {
         // 先尝试读缓存
         $key = str_replace(['/', '\\'], '_', $this->resourceName) . ':' . $this->resourceID;
-        if ( ! $result = $this->cache->get($key))
+        if ($this->storage->cache && $result = $this->cache->get($key))
+        {
+            $result = json_decode($result, true);
+        }
+        else
         {
             // 缓存读取失败
             // 从storage读取
@@ -327,10 +369,6 @@ class Core extends Object
             {
                 $this->cache->set($key, json_encode($result), 60 * 5);
             }
-        }
-        else
-        {
-            $result = json_decode($result, true);
         }
 
         // 返回结果
@@ -353,7 +391,11 @@ class Core extends Object
         $queryHash = sha1($queryHash);
         $key = str_replace(['/', '\\'], '_', $this->resourceName) . ':list:' . $queryHash;
 
-        if ( ! $result = $this->cache->get($key))
+        if ($this->storage->cache && $result = $this->cache->get($key))
+        {
+            $result = json_decode($result, true);
+        }
+        else
         {
             // 缓存读取失败
             // 从storage读取
@@ -369,10 +411,6 @@ class Core extends Object
             {
                 $this->cache->set($key, json_encode($result), 60 * 5);
             }
-        }
-        else
-        {
-            $result = json_decode($result, true);
         }
 
         return $result;
@@ -394,7 +432,7 @@ class Core extends Object
             // 创建成功
             $this->resourceID = $result['id'];
             // 返回资源信息
-            $this->response->headers['Location'] = $this->urlFor('resource-handle', ['resource' => $this->resourcePath . '/' . $result['id']]);
+            $this->response->headers('Location', Route::url('rest', ['resource' => $this->resourcePath . '/' . $result['id']]));
             $this->restResponse($result, 201);
         }
         else

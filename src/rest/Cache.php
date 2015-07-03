@@ -3,7 +3,7 @@
 namespace rest;
 
 use Predis\Client;
-use tourze\Redis\Redis;
+use tourze\NoSQL\Redis\Redis;
 
 class Cache
 {
@@ -14,7 +14,7 @@ class Cache
     public $redis = null;
 
     /**
-     * @return \tourze\Redis\Client
+     * @return \tourze\NoSQL\Redis\Client
      */
     public function ensureCache()
     {

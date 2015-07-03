@@ -1,7 +1,8 @@
 <?php
 
 use tourze\Base\Base;
-use tourze\Base\Flow;
+use tourze\Bootstrap\Bootstrap;
+use tourze\Flow\Flow;
 
 require '../bootstrap.php';
 
@@ -15,5 +16,5 @@ $flow = Flow::instance('sdk');
 $flow->contexts = [
     'app'     => $app,
 ];
-$flow->layers = Base::$layers;
+$flow->layers = Bootstrap::$layers;
 $flow->start();

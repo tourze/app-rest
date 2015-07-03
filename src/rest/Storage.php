@@ -2,7 +2,7 @@
 
 namespace rest;
 
-use rest\storage\StorageInterface;
+use rest\Storage\StorageInterface;
 
 /**
  * Class Storage
@@ -15,9 +15,9 @@ class Storage
     public static $defaultType = 'csv';
 
     public static $typeMapping = [
-        'pdo'  => '\rest\storage\PDO',
-        'fake' => '\rest\storage\Faker',
-        'csv' => '\rest\storage\CSV',
+        'pdo'  => '\rest\Storage\PDO',
+        'fake' => '\rest\Storage\Faker',
+        'csv' => '\rest\Storage\CSV',
     ];
 
     /**

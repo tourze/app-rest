@@ -7,13 +7,13 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'rest\\' => array($baseDir . '/src'),
+    'ZxcvbnPhp' => array($vendorDir . '/bjeavons/zxcvbn-php/src'),
     'Whoops' => array($vendorDir . '/filp/whoops/src'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
-    'SlimController' => array($vendorDir . '/slimcontroller/slimcontroller/src'),
-    'Slim' => array($vendorDir . '/slim/slim'),
     'SecurityLib' => array($vendorDir . '/ircmaxell/security-lib/lib'),
     'RandomLib' => array($vendorDir . '/ircmaxell/random-lib/lib'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
+    'League\\Monga' => array($vendorDir . '/league/monga/src'),
     'Illuminate\\Support' => array($vendorDir . '/illuminate/support'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
     'Guzzle\\Tests' => array($vendorDir . '/guzzle/guzzle/tests'),

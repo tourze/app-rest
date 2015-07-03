@@ -1,8 +1,8 @@
 <?php
 
 namespace rest;
+
 use Symfony\Component\Yaml\Yaml;
-use rest\exception\MetaException;
 
 /**
  * META信息处理

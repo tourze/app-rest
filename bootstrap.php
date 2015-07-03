@@ -1,6 +1,7 @@
 <?php
 
 use tourze\Base\Base;
+use tourze\Base\Debug;
 use tourze\Route\Route;
 
 if ( ! defined('ROOT_PATH'))
@@ -17,6 +18,8 @@ Base::$logConfig = [
 
 // 指定控制器命名空间
 Route::$defaultNamespace = '\\rest\\Controller\\';
+
+Debug::enable();
 
 /**
  * 一个请求可以分成几个步骤：

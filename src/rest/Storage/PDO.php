@@ -2,7 +2,9 @@
 
 namespace rest\Storage;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
+use rest\Exception\RestException;
 
 /**
  * PDO连接
@@ -15,7 +17,7 @@ class PDO extends Base implements StorageInterface
     /**
      * @var \Doctrine\DBAL\Connection
      */
-    public $conn = null;
+    public $db = null;
 
     /**
      * @var string 表名
@@ -53,9 +55,9 @@ class PDO extends Base implements StorageInterface
      * @return \Doctrine\DBAL\Connection
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function ensurePDO()
+    public function ensureDB()
     {
-        if ($this->conn === null)
+        if ($this->db === null)
         {
             $dbParams = [
                 'driver'   => $this->driver,
@@ -64,10 +66,10 @@ class PDO extends Base implements StorageInterface
                 'user'     => $this->user,
                 'password' => $this->password,
             ];
-            $this->conn = DriverManager::getConnection($dbParams);
+            $this->db = DriverManager::getConnection($dbParams);
         }
 
-        return $this->conn;
+        return $this->db;
     }
 
     /**
@@ -75,7 +77,8 @@ class PDO extends Base implements StorageInterface
      *
      * @param      $data
      * @param null $primaryID
-     * @return  mixed
+     * @return mixed
+     * @throws \rest\Exception\RestException
      */
     public function create($data, $primaryID = null)
     {
@@ -84,19 +87,27 @@ class PDO extends Base implements StorageInterface
             $data['id'] = $primaryID;
         }
 
-        $query = $this->ensurePDO()->createQueryBuilder();
+        $query = $this->ensureDB()->createQueryBuilder();
         $query->insert($this->table);
 
         $insertData = [];
         foreach ($data as $k => $v)
         {
-            $insertData[$this->ensurePDO()->quoteIdentifier($k)] = ":$k";
+            $insertData[$this->ensureDB()->quoteIdentifier($k)] = ":$k";
         }
         $query->values($insertData);
         $query->setParameters($data);
 
-        $query->execute();
-        $id = $this->ensurePDO()->lastInsertId();
+        try
+        {
+            $query->execute();
+        }
+        catch (DBALException $e)
+        {
+            throw new RestException($e->getMessage());
+        }
+
+        $id = $this->ensureDB()->lastInsertId();
 
         if ($id)
         {
@@ -117,7 +128,7 @@ class PDO extends Base implements StorageInterface
      */
     public function update($primaryID, $data)
     {
-        $query = $this->ensurePDO()->createQueryBuilder();
+        $query = $this->ensureDB()->createQueryBuilder();
 
         $query->update($this->table);
 
@@ -147,12 +158,12 @@ class PDO extends Base implements StorageInterface
      */
     public function record(array $conditions, $limit = 1, $offset = 0, $orderBy = null)
     {
-        $query = $this->ensurePDO()->createQueryBuilder();
+        $query = $this->ensureDB()->createQueryBuilder();
 
         $columns = $this->getSourceColumns();
         foreach ($columns as $column)
         {
-            $query->addSelect($this->ensurePDO()->quoteIdentifier($column));
+            $query->addSelect($this->ensureDB()->quoteIdentifier($column));
         }
         $query->from($this->table);
 
@@ -193,7 +204,7 @@ class PDO extends Base implements StorageInterface
      */
     public function delete($primaryID)
     {
-        $query = $this->ensurePDO()->createQueryBuilder();
+        $query = $this->ensureDB()->createQueryBuilder();
 
         $query->delete($this->table);
         $query->where('id = :id');

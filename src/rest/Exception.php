@@ -2,6 +2,8 @@
 
 namespace rest;
 
-class Exception extends \Exception
+use tourze\Base\Exception\BaseException;
+
+class Exception extends BaseException
 {
 }

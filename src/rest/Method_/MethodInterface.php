@@ -1,6 +1,6 @@
 <?php
 
-namespace rest\method;
+namespace rest\Method;
 
 interface MethodInterface
 {

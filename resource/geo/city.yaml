@@ -1,10 +1,5 @@
 storage:
-  type: pdo
-  driver: pdo_mysql
-  host: 192.168.33.10
-  dbname: com_tourze_rest
-  user: admin
-  password: admin
+  extends: local_mysql_1
   table: geo_city
 method:
   head: true
@@ -12,9 +7,6 @@ method:
   get: true
   post: true
   delete: true
-logic:
-  date_created: true
-  date_updated: true
 fields:
   id:
     type: integer

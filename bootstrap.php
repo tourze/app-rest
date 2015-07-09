@@ -4,10 +4,9 @@ use tourze\Base\Base;
 use tourze\Base\Debug;
 use tourze\Route\Route;
 
-if ( ! defined('ROOT_PATH'))
-{
-    define('ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
-}
+defined('ROOT_PATH') || define('ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
+defined('RESOURCE_PATH') || define('RESOURCE_PATH', ROOT_PATH . 'resource' . DIRECTORY_SEPARATOR);
+defined('STORAGE_PATH') || define('STORAGE_PATH', ROOT_PATH . 'storage' . DIRECTORY_SEPARATOR);
 
 require 'vendor/autoload.php';
 
@@ -17,7 +16,7 @@ Base::$logConfig = [
 ];
 
 // 指定控制器命名空间
-Route::$defaultNamespace = '\\rest\\Controller\\';
+Route::$defaultNamespace = '\rest\Controller\\';
 
 Debug::enable();
 

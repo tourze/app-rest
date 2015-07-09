@@ -3,6 +3,7 @@
 namespace rest;
 
 use Symfony\Component\Yaml\Yaml;
+use tourze\Base\Helper\Arr;
 
 /**
  * META信息处理
@@ -23,7 +24,7 @@ class Meta
      */
     public static function get($resource)
     {
-        $resourceFile = ROOT_PATH . self::$resourceDir . DIRECTORY_SEPARATOR . $resource . '.yaml';
+        $resourceFile = RESOURCE_PATH . $resource . '.yaml';
         if ( ! is_file($resourceFile))
         {
             return false;
@@ -32,6 +33,20 @@ class Meta
         // 读取yaml内容，并解析为php数组
         $resourceContent = file_get_contents($resourceFile);
         $resourceContent = Yaml::parse($resourceContent);
+
+        // storage特别处理
+        if ($storage = Arr::get($resourceContent, 'storage'))
+        {
+            if (isset($storage['extends']))
+            {
+                $extendStorage = file_get_contents(STORAGE_PATH . $storage['extends'] . '.yaml');
+                $extendStorage = Yaml::parse($extendStorage);
+                unset($storage['extends']);
+
+                $storage = Arr::merge($extendStorage, $storage);
+            }
+            $resourceContent['storage'] = $storage;
+        }
 
         return $resourceContent;
     }

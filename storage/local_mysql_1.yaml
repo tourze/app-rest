@@ -1,0 +1,6 @@
+type: pdo
+driver: pdo_mysql
+host: 192.168.33.10
+dbname: com_tourze_rest
+user: admin
+password: admin

@@ -2,11 +2,23 @@
 
 namespace rest;
 
-use Predis\Client;
+use tourze\Base\Object;
+use tourze\NoSQL\Redis\Client;
 use tourze\NoSQL\Redis\Redis;
 
-class Cache
+class Cache extends Object
 {
+
+    /**
+     * 返回指定实例
+     *
+     * @param array $config
+     * @return \rest\Cache
+     */
+    public static function instance($config = [])
+    {
+        return new self($config);
+    }
 
     /**
      * @var Client 默认使用redis作为缓存

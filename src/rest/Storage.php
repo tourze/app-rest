@@ -2,6 +2,7 @@
 
 namespace rest;
 
+use rest\Storage\Base;
 use rest\Storage\StorageInterface;
 
 /**
@@ -21,16 +22,18 @@ class Storage
     ];
 
     /**
-     * @param $config
+     * @param       $config
+     * @param array $fields
      * @return StorageInterface
      */
-    public static function instance($config)
+    public static function instance($config, $fields = [])
     {
         $driver = (isset($config['type']) && isset(self::$typeMapping[$config['type']])) ? $config['type'] : self::$defaultType;
         $class = self::$typeMapping[$driver];
 
-        /** @var StorageInterface $instance */
+        /** @var Base $instance */
         $instance = new $class($config);
+        $instance->fields = $fields;
 
         return $instance;
     }

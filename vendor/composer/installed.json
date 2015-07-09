@@ -2261,41 +2261,6 @@
         ]
     },
     {
-        "name": "tourze/tourze",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://git.oschina.net/ywisax/com.tourze.php.tourze.git",
-            "reference": "235480cf5ac17fb174deebf1f9cbf3d2a0ffb439"
-        },
-        "require": {
-            "league/oauth2-client": "^0.11.0",
-            "tourze/core": "dev-master"
-        },
-        "time": "2015-07-03 15:42:08",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "tourze\\": "src/"
-            },
-            "files": [
-                "bootstrap.php"
-            ]
-        },
-        "license": [
-            "proprietary"
-        ],
-        "authors": [
-            {
-                "name": "YwiSax",
-                "email": "25803471@qq.com"
-            }
-        ],
-        "description": "Tourze Helper and collection"
-    },
-    {
         "name": "tourze/core",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -2357,5 +2322,40 @@
             }
         ],
         "description": "Tourze Core"
+    },
+    {
+        "name": "tourze/tourze",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://git.oschina.net/ywisax/com.tourze.php.tourze.git",
+            "reference": "af98cf71fb9b9a9391eefbe366f3c5fc84c9720b"
+        },
+        "require": {
+            "league/oauth2-client": "^0.11.0",
+            "tourze/core": "dev-master"
+        },
+        "time": "2015-07-04 06:43:37",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "tourze\\": "src/"
+            },
+            "files": [
+                "bootstrap.php"
+            ]
+        },
+        "license": [
+            "proprietary"
+        ],
+        "authors": [
+            {
+                "name": "YwiSax",
+                "email": "25803471@qq.com"
+            }
+        ],
+        "description": "Tourze Helper and collection"
     }
 ]

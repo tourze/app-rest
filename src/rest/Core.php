@@ -125,11 +125,14 @@ class Core extends Object
         {
             throw new RestException('Unable to locate the storage.');
         }
-        $this->storage = Storage::instance($this->meta['storage']);
-        $this->storage->app =& $this;
+        $this->storage = Storage::instance($this->meta['storage'], Arr::get($this->meta, 'fields'));
 
         // 缓存
-        $this->cache = new Cache;
+        $this->cache = Cache::instance();
+
+        // 逻辑处理层
+        $this->logic = Logic::instance(Arr::get($this->meta, 'logic'));
+        $this->logic->rest =& $this;
     }
 
     /**
@@ -206,6 +209,9 @@ class Core extends Object
 
         //$this->response->headers['X-Powered-By'] = 'Rest Server';
         $methodConfig = $this->getMetaMethodConfig();
+
+        // 逻辑，预处理
+        $this->logic->prepareMethodDispatch();
 
         if (isset($methodConfig[$method]) && $methodConfig[$method])
         {

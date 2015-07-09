@@ -6,7 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'tourze\\' => array($vendorDir . '/tourze/tourze/src', $vendorDir . '/tourze/core/src'),
+    'tourze\\' => array($vendorDir . '/tourze/core/src', $vendorDir . '/tourze/tourze/src'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Symfony\\Component\\Filesystem\\' => array($vendorDir . '/symfony/filesystem'),
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),

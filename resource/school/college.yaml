@@ -12,9 +12,6 @@ method:
   get: true
   post: true
   delete: true
-logic:
-  date_created: true
-  date_updated: true
 fields:
   id:
     type: integer

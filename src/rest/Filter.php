@@ -4,11 +4,11 @@ namespace rest;
 use tourze\Base\Object;
 
 /**
- * 逻辑处理
+ * 过滤器处理
  *
  * @package rest
  */
-class Logic extends Object
+class Filter extends Object
 {
 
     /**
@@ -18,7 +18,7 @@ class Logic extends Object
 
     /**
      * @param array $config
-     * @return \rest\Logic
+     * @return \rest\Filter
      */
     public static function instance($config = [])
     {
@@ -30,8 +30,7 @@ class Logic extends Object
      * @var array 逻辑处理类名映射表
      */
     public $classMap = [
-        'date_format'     => '\rest\Logic\Date\Format',
-        'result_not_null' => '\rest\Logic\ResultNotNull',
+        'date_format'     => '\rest\Filter\Date\Format',
     ];
 
     public function prepareMethodDispatch()

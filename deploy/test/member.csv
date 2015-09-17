@@ -1,7 +1,0 @@
-id,username,password,email,myid,myidkey,regip,regdate,lastloginip,lastlogintime,salt,secques
-1,admin,aed5b23669e178b429a35b11eb1a3aab,admin@admin.com,,,hidden,1421201159,,,72f101,
-2,wangyehena,afbb17680cb5cb69c9775946592cae68,wangyehena@163.com,,,10.20.104.141,1421226491,,,b7e12c,
-3,dqx,83abb98d8b95c56e6a661372f307b6c0,duan_qx@126.com,,,10.20.97.49,1421226649,,,953381,
-4,suzaku,80ce359a563e1d408bb8a3fb6eba344b,374231782@qq.com,,,10.20.96.86,1421406135,,,7796f3,
-5,uranus1202,ce1c77c13d088cbb7309a913ac0ce011,uranus1202@163.com,,,10.20.96.72,1422417877,,,5548c5,
-6,chenweillan,6e775cbaa480f4977c3d6011cd396eab,willscott@126.com,,,10.20.96.49,1425615555,,,32b769,

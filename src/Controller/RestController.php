@@ -3,9 +3,9 @@
 namespace rest\Controller;
 
 use rest\Core;
-use tourze\Controller\BaseController;
+use tourze\Controller\WebController;
 
-class RestController extends BaseController
+class RestController extends WebController
 {
 
     /**

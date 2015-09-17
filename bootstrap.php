@@ -1,24 +1,32 @@
 <?php
 
-use tourze\Base\Base;
-use tourze\Base\Debug;
+use tourze\Base\Config;
 use tourze\Route\Route;
 
-defined('ROOT_PATH') || define('ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
-defined('RESOURCE_PATH') || define('RESOURCE_PATH', ROOT_PATH . 'resource' . DIRECTORY_SEPARATOR);
-defined('STORAGE_PATH') || define('STORAGE_PATH', ROOT_PATH . 'storage' . DIRECTORY_SEPARATOR);
+if (is_file(__DIR__ . '/vendor/autoload.php'))
+{
+    require_once __DIR__ . '/vendor/autoload.php';
+}
 
-require 'vendor/autoload.php';
+if ( ! defined('ROOT_PATH'))
+{
+    define('ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
+}
 
-Base::$cacheDir = ROOT_PATH . 'tmp/cache';
-Base::$logConfig = [
-    'file' => ROOT_PATH . 'tmp/log/' . date('Y/md') . '.log'
-];
+if ( ! defined('RESOURCE_PATH'))
+{
+    define('RESOURCE_PATH', ROOT_PATH . 'resource' . DIRECTORY_SEPARATOR);
+}
+
+if ( ! defined('STORAGE_PATH'))
+{
+    define('STORAGE_PATH', ROOT_PATH . 'storage' . DIRECTORY_SEPARATOR);
+}
 
 // 指定控制器命名空间
 Route::$defaultNamespace = '\rest\Controller\\';
 
-Debug::enable();
+Config::addPath(ROOT_PATH . 'config' . DIRECTORY_SEPARATOR);
 
 /**
  * 一个请求可以分成几个步骤：

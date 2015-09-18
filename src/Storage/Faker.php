@@ -8,7 +8,7 @@ use Faker\Factory;
  *
  * @package rest\Storage
  */
-class Faker extends Base implements StorageInterface
+class Faker extends StorageBase implements StorageInterface
 {
 
     /**

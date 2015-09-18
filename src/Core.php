@@ -3,8 +3,9 @@
 namespace rest;
 
 use rest\Exception\RestException;
-use rest\Storage\Base;
+use rest\Storage\StorageBase;
 use rest\Storage\StorageInterface;
+use tourze\Base\Base;
 use tourze\Base\Helper\Arr;
 use tourze\Base\Object;
 use tourze\Http\Request;
@@ -52,7 +53,7 @@ class Core extends Object
     public $meta;
 
     /**
-     * @var StorageInterface|Base
+     * @var StorageInterface|StorageBase
      */
     public $storage;
 
@@ -85,6 +86,11 @@ class Core extends Object
         '_offset' => 0,
         '_sort'   => ['id' => 'DESC'],
     ];
+
+    /**
+     * @var string 默认格式
+     */
+    public $defaultFormat = 'json';
 
     /**
      * 加载和解析资源路径
@@ -256,16 +262,25 @@ class Core extends Object
      */
     public function restResponse($body, $code = 200)
     {
+        Base::getLog()->info(__METHOD__ . ' begin to response - start');
+
         if ( ! isset($this->behavior['_format']))
         {
-            $this->behavior['_format'] = 'json';
+            Base::getLog()->info(__METHOD__ . ' set default format', [
+                'format' => $this->defaultFormat,
+            ]);
+            $this->behavior['_format'] = $this->defaultFormat;
         }
+        Base::getLog()->info(__METHOD__ . ' current format', [
+            'format' => $this->behavior['_format'],
+        ]);
 
         switch ($this->behavior['_format'])
         {
             case 'json':
                 if ($this->behavior['_pretty'])
                 {
+                    Base::getLog()->info(__METHOD__ . ' prettify json data');
                     $content = json_encode($body, JSON_PRETTY_PRINT);
                 }
                 else
@@ -278,6 +293,7 @@ class Core extends Object
             case 'jsonp':
                 if ($this->behavior['_pretty'])
                 {
+                    Base::getLog()->info(__METHOD__ . ' prettify json data');
                     $content = json_encode($body, JSON_PRETTY_PRINT);
                 }
                 else
@@ -292,6 +308,7 @@ class Core extends Object
             default:
                 if ($this->behavior['_pretty'])
                 {
+                    Base::getLog()->info(__METHOD__ . ' prettify json data');
                     $content = json_encode($body, JSON_PRETTY_PRINT);
                 }
                 else
@@ -301,9 +318,16 @@ class Core extends Object
                 $contentType = 'application/json';
         }
 
+        Base::getLog()->info(__METHOD__ . ' get final response', [
+            'code'        => $code,
+            'contentType' => $contentType,
+            'body'        => $content,
+        ]);
         $this->response->status = $code;
         $this->response->headers('Content-Type', $contentType);
         $this->response->body = $content;
+
+        Base::getLog()->info(__METHOD__ . ' begin to response - end');
     }
 
     /**
@@ -316,7 +340,7 @@ class Core extends Object
     {
         $body = [
             'code'    => $code,
-            'message' => $message
+            'message' => $message,
         ];
         $this->response->headers('Rest-Message', $message);
         $this->restResponse($body, $code);
@@ -392,7 +416,7 @@ class Core extends Object
             $this->query,
             (int) $this->behavior['_limit'],
             (int) $this->behavior['_offset'],
-            $this->behavior['_sort']
+            $this->behavior['_sort'],
         ]);
         $queryHash = sha1($queryHash);
         $key = str_replace(['/', '\\'], '_', $this->resourceName) . ':list:' . $queryHash;
@@ -493,7 +517,7 @@ class Core extends Object
     public function restPatch()
     {
         $result = [
-            'name' => 'New Name'
+            'name' => 'New Name',
         ];
 
         $this->restResponse([$result]);

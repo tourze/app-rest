@@ -7,7 +7,7 @@ namespace rest\Filter;
  *
  * @package rest\Logic
  */
-class Date extends Base implements FilterInterface
+class Date extends FilterBase implements FilterInterface
 {
 
 }

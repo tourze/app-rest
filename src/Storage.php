@@ -2,7 +2,7 @@
 
 namespace rest;
 
-use rest\Storage\Base;
+use rest\Storage\StorageBase;
 use rest\Storage\StorageInterface;
 
 /**
@@ -31,7 +31,7 @@ class Storage
         $driver = (isset($config['type']) && isset(self::$typeMapping[$config['type']])) ? $config['type'] : self::$defaultType;
         $class = self::$typeMapping[$driver];
 
-        /** @var Base $instance */
+        /** @var StorageBase $instance */
         $instance = new $class($config);
         $instance->fields = $fields;
 

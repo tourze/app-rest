@@ -4,7 +4,7 @@ namespace rest\Storage;
 
 use tourze\Base\Object;
 
-abstract class Base extends Object
+abstract class StorageBase extends Object
 {
 
     /**

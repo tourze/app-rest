@@ -2,7 +2,7 @@
 
 namespace rest\Logic;
 
-class Base
+class LogicBase
 {
 
     /**

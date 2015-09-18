@@ -7,7 +7,7 @@ namespace rest\Method;
  *
  * @package rest\Method
  */
-class Base
+class MethodBase
 {
 
 }

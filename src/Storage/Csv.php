@@ -4,7 +4,7 @@ namespace rest\Storage;
 
 use EasyCSV\Reader;
 
-class Csv extends Base implements StorageInterface
+class Csv extends StorageBase implements StorageInterface
 {
 
     /**

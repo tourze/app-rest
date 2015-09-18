@@ -12,6 +12,7 @@
   "require": {
     "tourze/base": "^1.0",
     "tourze/bootstrap": "^1.0",
+    "tourze/http": "^1.0",
     "tourze/controller": "^1.0",
     "tourze/model": "^1.0",
     "tourze/server": "^1.0",

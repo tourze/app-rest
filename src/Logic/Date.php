@@ -7,7 +7,7 @@ namespace rest\Logic;
  *
  * @package rest\Logic
  */
-class Date extends Base implements LogicInterface
+class Date extends LogicBase implements LogicInterface
 {
 
 }

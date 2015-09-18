@@ -7,7 +7,7 @@ namespace rest\Logic;
  *
  * @package rest\Logic
  */
-class ResultNotNull extends Base implements LogicInterface
+class ResultNotNull extends LogicBase implements LogicInterface
 {
 
 }

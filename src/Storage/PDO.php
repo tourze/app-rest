@@ -11,7 +11,7 @@ use rest\Exception\RestException;
  *
  * @package rest\Storage
  */
-class PDO extends Base implements StorageInterface
+class PDO extends StorageBase implements StorageInterface
 {
 
     /**
